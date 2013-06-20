@@ -119,7 +119,7 @@ object Build extends Build with DocSupport {
       sprayIO) // for access to akka.io.Tcp, can go away after upgrade to Akka 2.2
     .settings(sprayModuleSettings: _*)
     .settings(libraryDependencies ++=
-      provided(akkaActor, servlet30) ++
+      provided(akkaActor, servlet31) ++
       test(specs2)
     )
 
@@ -256,6 +256,7 @@ object Build extends Build with DocSupport {
 
   lazy val sprayServletExamples = Project("spray-servlet-examples", file("examples/spray-servlet"))
     .aggregate(simpleSprayServletServer)
+    .aggregate(simpleSprayServlet31Server)
     .settings(exampleSettings: _*)
 
   lazy val simpleSprayServletServer = Project("simple-spray-servlet-server",
@@ -269,4 +270,17 @@ object Build extends Build with DocSupport {
       runtime(akkaSlf4j, logback) ++
       container(jettyWebApp, servlet30)
     )
+
+  lazy val simpleSprayServlet31Server = Project("simple-spray-servlet31-server",
+    file("examples/spray-servlet/simple-spray-servlet31-server"))
+    .dependsOn(sprayHttp, sprayServlet,
+    sprayIO) // for access to akka.io.Tcp, can go away after upgrade to Akka 2.2
+    //.settings(jettyExampleSettings: _*)
+    .settings(exampleSettings: _*)
+    .settings(libraryDependencies ++=
+    compile(akkaActor) ++
+      runtime(akkaSlf4j, logback) ++
+      provided(servlet31)
+  )
+
 }
